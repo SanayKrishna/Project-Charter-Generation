@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Charter Generator | Workspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="workspace-layout">
+      <!-- Left Navigation Bar -->
+      <aside class="sidebar-nav">
+        <div class="sidebar-brand">
+          <span class="brand-title">CharterOS</span>
+          <span class="brand-version">v2.4 Enterprise</span>
+        </div>
+
+        <nav class="nav-menu">
+          <span class="menu-label">DOCUMENTATION</span>
+          <a href="#" class="nav-link active">
+            <span class="nav-indicator"></span>
+            <span>New Charter</span>
+          </a>
+          <a href="#" class="nav-link disabled">
+            <span class="nav-indicator"></span>
+            <span>Charter Library</span>
+          </a>
+          <a href="#" class="nav-link disabled">
+            <span class="nav-indicator"></span>
+            <span>Templates</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="user-pill">
+            <span class="avatar-dot"></span>
+            <span>Enterprise Workspace</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Viewport -->
+      <div class="main-viewport">
+        <header class="top-navbar">
+          <div class="navbar-title">
+            <h2>Project Charter Generator</h2>
+            <span class="breadcrumb">Workspace / Project Specification Form</span>
+          </div>
+          <div class="navbar-status">
+            <span class="status-dot"></span>
+            <span>System Active</span>
+          </div>
+        </header>
+
+        <main class="content-area">
+          {% if error %}
+          <div class="error-banner" role="alert">
+            <span>{{ error }}</span>
+          </div>
+          {% endif %}
+
+          <form id="charter-form" method="post" class="form-container" novalidate>
+            <!-- Card 1: Identity -->
+            <section class="card-panel">
+              <header class="panel-header">
+                <span class="panel-num">01</span>
+                <div>
+                  <h3>Project Overview & Identity</h3>
+                  <p>Specify title and high-level business objectives</p>
+                </div>
+              </header>
+              <div class="panel-body">
+                <div class="form-group">
+                  <label for="project_name">Project Title <span class="req">*</span></label>
+                  <input id="project_name" name="project_name" type="text" placeholder="e.g. Omnichannel Customer Experience Portal" value="{{ form_data.project_name if form_data else '' }}" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="objective">Core Goal / Business Objective <span class="req">*</span></label>
+                  <textarea id="objective" name="objective" rows="4" placeholder="Detail the problem statement, targets, and expected business impact..." required>{{ form_data.objective if form_data else '' }}</textarea>
+                </div>
+              </div>
+            </section>
+
+            <!-- Card 2: Constraints -->
+            <section class="card-panel">
+              <header class="panel-header">
+                <span class="panel-num">02</span>
+                <div>
+                  <h3>Operational Constraints & Allocations</h3>
+                  <p>Define resource limits, financial scope, and target timelines</p>
+                </div>
+              </header>
+              <div class="panel-body">
+                <div class="form-grid-2col">
+                  <div class="form-group">
+                    <label for="budget_constraint">Budget Constraint <span class="req">*</span></label>
+                    <input id="budget_constraint" name="budget_constraint" type="text" value="{{ form_data.budget_constraint if form_data else '' }}" placeholder="e.g. ₹0–₹800 or $50,000" required />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="timeline_constraint">Timeline Target <span class="req">*</span></label>
+                    <input id="timeline_constraint" name="timeline_constraint" type="text" value="{{ form_data.timeline_constraint if form_data else '' }}" placeholder="e.g. 12 weeks" required />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="team_size_resources">Team Resources & Staffing <span class="req">*</span></label>
+                  <input id="team_size_resources" name="team_size_resources" type="text" value="{{ form_data.team_size_resources if form_data else '' }}" placeholder="e.g. 4 Engineers, 1 Designer, 1 PM" required />
+                </div>
+              </div>
+            </section>
+
+            <!-- Card 3: Governance & Stakeholders -->
+            <section class="card-panel">
+              <header class="panel-header">
+                <span class="panel-num">03</span>
+                <div>
+                  <h3>Stakeholder Governance Roster</h3>
+                  <p>Assign roles and responsibility pairs</p>
+                </div>
+              </header>
+              <div class="panel-body">
+                <div id="stakeholder-rows" class="stakeholder-list">
+                  {% set stakeholder_rows = form_data.stakeholders if form_data and form_data.stakeholders else [{}, {}, {}] %}
+                  {% for row in stakeholder_rows %}
+                  <div class="stakeholder-row">
+                    <input type="text" name="stakeholder_name" value="{{ row.name if row else '' }}" placeholder="Stakeholder Name" />
+                    <input type="text" name="stakeholder_role" value="{{ row.role if row else '' }}" placeholder="Governance Role" />
+                  </div>
+                  {% endfor %}
+                </div>
+
+                <button type="button" id="add-stakeholder" class="btn-secondary-action">+ Add Stakeholder Row</button>
+              </div>
+            </section>
+
+            <!-- Action Submit Bar -->
+            <div class="form-action-bar">
+              <button id="submit-btn" type="submit" class="btn-primary-action">Generate Executive Charter</button>
+              <div id="loading-message" class="loading-box" hidden>
+                <span class="spinner-icon"></span>
+                <span>Compiling specification charter...</span>
+              </div>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const stakeholderRows = document.getElementById('stakeholder-rows');
+      const addButton = document.getElementById('add-stakeholder');
+
+      addButton.addEventListener('click', () => {
+        const row = document.createElement('div');
+        row.className = 'stakeholder-row';
+        row.innerHTML = `
+          <input type="text" name="stakeholder_name" placeholder="Stakeholder Name" />
+          <input type="text" name="stakeholder_role" placeholder="Governance Role" />
+        `;
+        stakeholderRows.appendChild(row);
+      });
+
+      document.getElementById('charter-form').addEventListener('submit', function (event) {
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredFields.forEach((field) => {
+          if (!field.value.trim()) {
+            field.classList.add('input-error');
+            isValid = false;
+          } else {
+            field.classList.remove('input-error');
+          }
+        });
+
+        if (!isValid) {
+          event.preventDefault();
+          return;
+        }
+
+        document.getElementById('loading-message').hidden = false;
+        document.getElementById('submit-btn').disabled = true;
+      });
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ charter.project_name }} | Executive Charter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="workspace-layout">
+      <!-- Left Sidebar Navigation -->
+      <aside class="sidebar-nav">
+        <div class="sidebar-brand">
+          <span class="brand-title">CharterOS</span>
+          <span class="brand-version">Document Viewer</span>
+        </div>
+
+        <nav class="nav-menu">
+          <span class="menu-label">DOCUMENT SECTIONS</span>
+          <a href="#sec-overview" class="nav-link active">1. Overview</a>
+          <a href="#sec-criteria" class="nav-link">2. Criteria & Deliverables</a>
+          <a href="#sec-milestones" class="nav-link">3. Milestones</a>
+          <a href="#sec-requirements" class="nav-link">4. Requirements</a>
+          <a href="#sec-risks" class="nav-link">5. Risk Analysis</a>
+          <a href="#sec-stakeholders" class="nav-link">6. Stakeholders</a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <a href="{{ url_for('index') }}" class="btn-sidebar-link">← Create New Charter</a>
+        </div>
+      </aside>
+
+      <!-- Main Viewer Area -->
+      <div class="main-viewport">
+        <header class="top-navbar">
+          <div class="navbar-title">
+            <h2>{{ charter.project_name }}</h2>
+            <span class="breadcrumb">Approved Project Specification Charter</span>
+          </div>
+          <div class="navbar-actions">
+            <button onclick="window.print()" class="btn-secondary-action">Print Charter</button>
+            <a href="{{ url_for('index') }}" class="btn-primary-action">New Charter</a>
+          </div>
+        </header>
+
+        <main class="content-area">
+          <article class="document-sheet">
+            <!-- Header Banner -->
+            <div class="sheet-banner">
+              <span class="sheet-tag">OFFICIAL CHARTER SPECIFICATION</span>
+              <h1 class="sheet-title">{{ charter.project_name }}</h1>
+
+              <div class="sheet-meta-grid">
+                <div class="meta-card">
+                  <span class="meta-title">Project Manager</span>
+                  <span class="meta-text">{{ charter.project_manager }}</span>
+                </div>
+                <div class="meta-card">
+                  <span class="meta-title">Budget Allocation</span>
+                  <span class="meta-text">{{ charter.resource.budget }}</span>
+                </div>
+                <div class="meta-card">
+                  <span class="meta-title">Staffing / Resources</span>
+                  <span class="meta-text">{{ charter.resource.team_members }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content Sections -->
+            <div class="sheet-body">
+              <section id="sec-overview" class="doc-panel">
+                <h3 class="panel-heading">1. Project Objective & Scope</h3>
+                <p>{{ charter.objective }}</p>
+              </section>
+
+              <div class="grid-2col">
+                <section id="sec-criteria" class="doc-panel">
+                  <h3 class="panel-heading">2. Success Criteria</h3>
+                  <p>{{ charter.success_criteria }}</p>
+                </section>
+
+                <section class="doc-panel">
+                  <h3 class="panel-heading">3. Key Deliverables</h3>
+                  <p>{{ charter.key_deliverables }}</p>
+                </section>
+              </div>
+
+              <section id="sec-milestones" class="doc-panel">
+                <h3 class="panel-heading">4. Target Milestones & Timeline</h3>
+                <table class="styled-table">
+                  <thead>
+                    <tr>
+                      <th>Phase / Milestone Description</th>
+                      <th>Target Deadline</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for milestone in charter.milestones %}
+                    <tr>
+                      <td><strong>{{ milestone.name }}</strong></td>
+                      <td><span class="pill-deadline">{{ milestone.deadline }}</span></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </section>
+
+              <div class="grid-2col">
+                <section id="sec-requirements" class="doc-panel">
+                  <h3 class="panel-heading">5. High-Level Requirements</h3>
+                  <ol class="styled-list">
+                    {% for requirement in charter.high_level_requirements %}
+                    <li>{{ requirement }}</li>
+                    {% endfor %}
+                  </ol>
+                </section>
+
+                <section id="sec-risks" class="doc-panel">
+                  <h3 class="panel-heading">6. Risk Assessment</h3>
+                  <ol class="styled-list warning-list">
+                    {% for risk in charter.risks %}
+                    <li>{{ risk }}</li>
+                    {% endfor %}
+                  </ol>
+                </section>
+              </div>
+
+              <section id="sec-stakeholders" class="doc-panel">
+                <h3 class="panel-heading">7. Key Stakeholders Roster</h3>
+                <table class="styled-table">
+                  <thead>
+                    <tr>
+                      <th>Stakeholder Name</th>
+                      <th>Designated Role & Governance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for stakeholder in charter.stakeholders %}
+                    <tr>
+                      <td><strong>{{ stakeholder.name }}</strong></td>
+                      <td>{{ stakeholder.role }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </section>
+            </div>
+          </article>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
+
+
+
+
+
+
+
