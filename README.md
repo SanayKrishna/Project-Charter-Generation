@@ -1,13 +1,13 @@
 # Project Charter Generator
 
-This Flask application collects basic project details and uses the Gemini API to generate a professional project charter in a structured document format.
+This Flask application collects basic project details and uses the Gemini API to draft a project charter from them, shown as a formatted document.
 
 ## Features
 
 - Input form for project name, objective, stakeholders, budget, timeline, and team resources
 - Dynamic stakeholder row management in the browser
 - Gemini API integration for charter generation
-- Structured document-style output with a professional business format
+- Charter rendered as a formatted business document
 - Clear error handling when the API call fails or returns invalid JSON
 
 ## Setup
@@ -39,5 +39,5 @@ This Flask application collects basic project details and uses the Gemini API to
 
 ## Notes
 
-- The app is intentionally simple and designed to display generated charter content in HTML without any export feature.
+- The charter is displayed as HTML. There is no PDF or Word export yet.
 - If the API key is missing or the Gemini response is not valid JSON, the app shows a clear error message instead of crashing.
